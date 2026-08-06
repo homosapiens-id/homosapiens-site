@@ -1,5 +1,6 @@
 name: Deploy GitHub Pages
 
+# Pages habilitado nas configuracoes do repositorio.	
 "on":
   push:
     branches: [main]
