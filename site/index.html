@@ -3,75 +3,74 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Catálogo e sandbox público da plataforma HomoSapiens APIs.">
-  <title>HomoSapiens APIs</title>
+  <meta name="description" content="Portal público de demonstrações estáticas da plataforma HomoSapiens.">
+  <title>HomoSapiens</title>
   <link rel="stylesheet" href="assets/portal.css">
 </head>
 <body>
   <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
   <header class="nav">
-    <a class="brand" href="/" aria-label="HomoSapiens APIs, início">HomoSapiens<span>APIs</span></a>
+    <a class="brand" href="/" aria-label="HomoSapiens, início">HomoSapiens<span>Portal</span></a>
     <nav aria-label="Navegação principal">
-      <a href="#apis">APIs</a>
-      <a href="#sandbox">Sandbox</a>
+      <a href="#demonstracoes">Demonstrações</a>
+      <a href="#sandbox">Sandbox local</a>
       <a href="#integracao">Integração</a>
-      <a href="admin.html">Admin</a>
     </nav>
   </header>
 
   <main id="conteudo">
     <section class="hero">
-      <p class="eyebrow">PLATAFORMA DE INTELIGÊNCIA APLICADA</p>
-      <h1>APIs que transformam dados complexos em decisões claras.</h1>
-      <p>Busca jurídica, memória, conectores públicos e infraestrutura de IA com rastreabilidade, segurança e integração controlada.</p>
+      <p class="eyebrow">INTELIGÊNCIA APLICADA · PORTAL PÚBLICO</p>
+      <h1>Demonstrações transparentes, sem depender da antiga VPS.</h1>
+      <p>Este portal é estático e público. Ele apresenta capacidades, contratos e exemplos locais sem afirmar disponibilidade produtiva de APIs, runners ou serviços autenticados.</p>
       <div class="actions">
-        <a class="primary" href="#apis">Explorar APIs</a>
-        <a class="secondary" href="#sandbox">Testar sandbox</a>
+        <a class="primary" href="#demonstracoes">Explorar demonstrações</a>
+        <a class="secondary" href="#sandbox">Usar sandbox local</a>
       </div>
-      <p class="status" id="platform-status" role="status" aria-live="polite">
-        <span aria-hidden="true"></span> Verificando catálogo público…
+      <p class="status status-preview" id="platform-status" role="status" aria-live="polite">
+        <span aria-hidden="true"></span> Portal estático publicado pelo GitHub Pages.
       </p>
     </section>
 
-    <section class="section" id="apis" aria-labelledby="apis-title">
+    <section class="section" id="demonstracoes" aria-labelledby="apis-title">
       <div class="section-head">
         <div>
-          <small>CATÁLOGO</small>
-          <h2 id="apis-title">Produtos disponíveis</h2>
+          <small>CATÁLOGO LOCAL</small>
+          <h2 id="apis-title">Demonstrações disponíveis</h2>
         </div>
-        <p>Comece pela demonstração pública. Acesso autenticado depende de liberação controlada.</p>
+        <p>Os itens abaixo descrevem capacidades e protótipos. Nenhum estado apresentado aqui comprova que exista API produtiva ou serviço autenticado ativo.</p>
       </div>
       <div id="api-grid" class="grid" aria-live="polite"></div>
     </section>
 
     <section class="section sandbox" id="sandbox" aria-labelledby="sandbox-title">
       <div class="sandbox-copy">
-        <small>SANDBOX</small>
-        <h2 id="sandbox-title">Teste antes de integrar.</h2>
-        <p>Experimente o formato das respostas sem acessar dados privados, credenciais ou sistemas autenticados.</p>
-        <p class="notice"><strong>Ambiente demonstrativo:</strong> a resposta do sandbox é sintética e não comprova disponibilidade produtiva.</p>
+        <small>SANDBOX LOCAL</small>
+        <h2 id="sandbox-title">Teste o formato, sem acessar backend.</h2>
+        <p>O resultado é gerado no navegador, não consulta serviços externos, não envia dados e não comprova disponibilidade produtiva.</p>
+        <p class="notice"><strong>Ambiente demonstrativo:</strong> não informe dados pessoais, documentos, segredos ou credenciais.</p>
       </div>
       <form class="console" id="sandbox-form">
-        <label for="sandbox-product">API
+        <label for="sandbox-product">Demonstração
           <select id="sandbox-product" required>
             <option value="lex-juridica">Lex Jurídica</option>
             <option value="lex-search-core">Lex Search Core</option>
             <option value="datajud-connector">DataJud Connector</option>
           </select>
         </label>
-        <label for="sandbox-operation">Operação
+        <label for="sandbox-operation">Operação simulada
           <select id="sandbox-operation" required>
             <option value="search">Pesquisa</option>
             <option value="health">Saúde</option>
             <option value="metadata">Metadados</option>
           </select>
         </label>
-        <label for="sandbox-query">Consulta
-          <textarea id="sandbox-query" maxlength="2000" placeholder="Descreva uma consulta demonstrativa"></textarea>
+        <label for="sandbox-query">Consulta demonstrativa
+          <textarea id="sandbox-query" maxlength="2000" placeholder="Descreva uma consulta sem dados pessoais ou sigilosos"></textarea>
         </label>
-        <button class="primary" id="sandbox-submit" type="submit">Executar teste</button>
+        <button class="primary" id="sandbox-submit" type="submit">Gerar demonstração local</button>
         <div class="result-panel" id="sandbox-result" aria-live="polite">
-          <p class="muted">A resposta demonstrativa aparecerá aqui.</p>
+          <p class="muted">O resultado local aparecerá aqui.</p>
         </div>
       </form>
     </section>
@@ -80,21 +79,21 @@
       <div class="section-head">
         <div>
           <small>INTEGRAÇÃO</small>
-          <h2 id="integracao-title">Da exploração ao acesso controlado.</h2>
+          <h2 id="integracao-title">Publicação separada de serviços.</h2>
         </div>
-        <p>Escopos, limites e credenciais são definidos somente após validação operacional.</p>
+        <p>APIs, autenticação, runners e administração não estão hospedados neste portal. Cada serviço será publicado separadamente somente após infraestrutura, segurança, evidência e homologação próprias.</p>
       </div>
       <div class="steps">
-        <article><b>01</b><h3>Explore</h3><p>Consulte catálogo, endpoints e formatos disponíveis.</p></article>
-        <article><b>02</b><h3>Teste</h3><p>Use o sandbox sem credenciais produtivas.</p></article>
-        <article><b>03</b><h3>Integre</h3><p>Solicite acesso com escopo e prazo definidos.</p></article>
+        <article><b>01</b><h3>Explore</h3><p>Consulte descrições públicas e formatos demonstrativos.</p></article>
+        <article><b>02</b><h3>Teste localmente</h3><p>Use o sandbox sintético sem transmitir dados.</p></article>
+        <article><b>03</b><h3>Integre depois</h3><p>Considere um serviço ativo apenas quando houver endpoint publicado e evidência técnica.</p></article>
       </div>
     </section>
   </main>
 
   <footer>
-    <strong>HomoSapiens APIs</strong>
-    <span>Infraestrutura tecnológica para inteligência aplicada.</span>
+    <strong>HomoSapiens</strong>
+    <span>Portal público estático · sem VPS · sem backend produtivo.</span>
   </footer>
   <script src="assets/portal.js" defer></script>
 </body>
