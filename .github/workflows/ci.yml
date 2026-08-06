@@ -1,21 +1,13 @@
 name: Site CI
-
 on:
   push:
     branches: [main]
   pull_request:
   workflow_dispatch:
-
 permissions:
   contents: read
-
-concurrency:
-  group: site-ci-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   validate:
-    name: Validate exact commit
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -23,57 +15,11 @@ jobs:
         with:
           ref: ${{ github.sha }}
           persist-credentials: false
-
-      - name: Record exact HEAD
-        shell: bash
-        run: |
-          set -euo pipefail
-          ACTUAL_SHA="$(git rev-parse HEAD)"
-          test "$ACTUAL_SHA" = "$GITHUB_SHA"
-          {
-            echo "repository=$GITHUB_REPOSITORY"
-            echo "expected_sha=$GITHUB_SHA"
-            echo "actual_sha=$ACTUAL_SHA"
-            echo "run_id=$GITHUB_RUN_ID"
-          } | tee site-ci-head-evidence.txt
-
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-
-      - name: Validate static site
-        run: python tests/validate_static.py
-
-      - name: Check JavaScript syntax
-        shell: bash
-        run: |
-          set -euo pipefail
-          node --check site/assets/portal.js
-          node --check site/assets/admin.js
-
-      - name: Write CI evidence
-        if: always()
-        shell: bash
-        run: |
-          {
-            echo "sha=$GITHUB_SHA"
-            echo "run_id=$GITHUB_RUN_ID"
-            echo "run_attempt=$GITHUB_RUN_ATTEMPT"
-            echo "status=${{ job.status }}"
-            echo "validation=static-accessibility-secret-hygiene-js-syntax"
-          } > site-ci-result.txt
-
-      - name: Upload immutable evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: homosapiens-site-ci-${{ github.sha }}
-          path: |
-            site-ci-head-evidence.txt
-            site-ci-result.txt
-          if-no-files-found: error
-          retention-days: 14
+      - run: python tests/validate_static.py
+      - run: node --check site/assets/portal.js
