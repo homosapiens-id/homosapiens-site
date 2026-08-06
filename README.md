@@ -1,22 +1,27 @@
 # homosapiens-site
 
-Portal público do ecossistema HomoSapiens / homosapiens.id.
+Portal público estático de `homosapiens.id`.
 
-Este repositório é a fonte única para editar o portal institucional e publicar na VPS.
+## Fonte vigente
 
-## Estrutura
-
-- `site/` — arquivos públicos do portal.
-- `ops/publish_homosapiens_site_vps_v03.sh` — publicador idempotente na VPS.
-- `ops/rollback_caddy_homosapiens_site_v01.sh` — rollback do Caddy usando backup persistente.
-- `docs/` — inventário e evidência operacional.
+- Conteúdo publicado: `site/index.html`, `site/assets/portal.css` e `site/assets/portal.js`.
+- Hospedagem: GitHub Pages.
+- Publicação: `.github/workflows/pages.yml`.
+- Validação: `tests/validate_static.py` e `.github/workflows/ci.yml`.
+- O artefato publicado usa allowlist explícita e não contém backend, autenticação, tokens ou console administrativo.
 
 ## Produção
 
 - Domínio: `https://homosapiens.id`
 - Alias: `https://www.homosapiens.id`
-- VPS: `76.13.226.21`
-- Container: `homosapiens-site`
-- Proxy: `media-studio-caddy`
+- A antiga VPS `76.13.226.21` está aposentada e não integra a arquitetura vigente.
 
-Publicação real é operação A4 e deve gerar evidência técnica.
+## Legado
+
+Os diretórios `ops/` e documentos históricos de VPS em `docs/` são preservados somente para auditoria histórica. Não devem ser executados como procedimento operacional atual.
+
+A referência de aposentadoria é `docs/VPS_APOSENTADA.md`.
+
+## Regra operacional
+
+Publicação real é ação A4. O deploy só ocorre após validação da allowlist, segurança básica, sintaxe JavaScript e correspondência com o commit exato.
