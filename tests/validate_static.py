@@ -100,7 +100,7 @@ def validate_page(page: Path) -> list[str]:
 
     duplicates = sorted({item for item in parser.ids if parser.ids.count(item) > 1})
     if duplicates:
-        failures.append(f"{page}: duplicate ids: {', '.join(duplicates)=")
+        failures.append(f"{page}: duplicate ids: {', '.join(duplicates)}")
     missing_targets = sorted(set(parser.labels) - set(parser.ids))
     if missing_targets:
         failures.append(f"{page}: labels without target: {', '.join(missing_targets)}")
