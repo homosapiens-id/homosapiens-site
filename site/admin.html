@@ -4,184 +4,23 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
-  <meta name="description" content="Console administrativo restrito da plataforma HomoSapiens APIs.">
-  <title>Admin · HomoSapiens APIs</title>
+  <meta name="description" content="Console administrativo indisponível enquanto não houver backend homologado.">
+  <title>Admin indisponível · HomoSapiens</title>
   <link rel="stylesheet" href="assets/portal.css">
 </head>
 <body class="admin-page">
   <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
   <header class="nav">
-    <a class="brand" href="/" aria-label="HomoSapiens APIs, início">HomoSapiens<span>Admin</span></a>
-    <div class="connection-state" id="connection-state" role="status" aria-live="polite">
-      <span class="state-dot" aria-hidden="true"></span>
-      <span id="connection-label">Sessão não iniciada</span>
-    </div>
+    <a class="brand" href="/" aria-label="HomoSapiens, início">HomoSapiens<span>Admin</span></a>
   </header>
-
   <main id="conteudo" class="admin-shell">
-    <section id="login-view" class="auth-card" aria-labelledby="login-title">
-      <small>ACESSO RESTRITO</small>
-      <h1 id="login-title">Painel administrativo</h1>
-      <p class="muted">Use somente uma conta administrativa autorizada. A senha não é armazenada no navegador.</p>
-      <form id="login-form" novalidate>
-        <label for="email">E-mail
-          <input id="email" name="email" type="email" autocomplete="username" required>
-        </label>
-        <label for="password">Senha
-          <input id="password" name="password" type="password" autocomplete="current-password" required>
-        </label>
-        <button class="primary" id="login-submit" type="submit">Entrar</button>
-        <div class="form-message" id="login-output" role="status" aria-live="polite"></div>
-      </form>
+    <section class="auth-card" aria-labelledby="admin-title">
+      <small>CONSOLE DESATIVADO</small>
+      <h1 id="admin-title">Administração indisponível</h1>
+      <p>O portal atual é estático e não possui backend, autenticação, tokens ou operações administrativas publicados.</p>
+      <p class="notice"><strong>Nenhuma credencial deve ser informada nesta página.</strong> O console só será reativado após infraestrutura própria, segurança, evidência técnica e homologação específica.</p>
+      <p><a class="primary" href="/">Voltar ao portal público</a></p>
     </section>
-
-    <section id="password-view" class="auth-card" hidden aria-labelledby="password-title">
-      <small>PRIMEIRO ACESSO</small>
-      <h1 id="password-title">Defina uma nova senha</h1>
-      <p class="muted">A senha temporária precisa ser substituída antes de liberar o console.</p>
-      <form id="password-form" novalidate>
-        <label for="current-password">Senha atual
-          <input id="current-password" type="password" autocomplete="current-password" required>
-        </label>
-        <label for="new-password">Nova senha
-          <input id="new-password" type="password" minlength="14" autocomplete="new-password" required>
-        </label>
-        <label for="confirm-password">Confirmar nova senha
-          <input id="confirm-password" type="password" minlength="14" autocomplete="new-password" required>
-        </label>
-        <button class="primary" id="password-submit" type="submit">Atualizar senha</button>
-        <button class="secondary" id="password-cancel" type="button">Encerrar sessão</button>
-        <div class="form-message" id="password-output" role="status" aria-live="polite"></div>
-      </form>
-    </section>
-
-    <div id="dashboard" hidden>
-      <div class="section-head admin-heading">
-        <div>
-          <small>CONSOLE</small>
-          <h1>Gestão da plataforma</h1>
-          <p class="muted" id="session-description">Sessão administrativa ativa.</p>
-        </div>
-        <div class="toolbar">
-          <button class="secondary" id="refresh" type="button">Atualizar</button>
-          <button class="secondary danger-text" id="logout" type="button">Sair</button>
-        </div>
-      </div>
-
-      <aside class="security-banner" role="note">
-        <strong>Operações reais e auditadas.</strong>
-        Confirme nome, escopos e alvo antes de criar ou revogar recursos. Tokens completos são mantidos apenas em memória e exibidos uma única vez.
-      </aside>
-
-      <section aria-labelledby="summary-title">
-        <div class="subhead">
-          <div><small>VISÃO GERAL</small><h2 id="summary-title">Estado administrativo</h2></div>
-          <span class="last-update" id="last-update"></span>
-        </div>
-        <div id="summary" class="metric-grid" aria-live="polite"></div>
-      </section>
-
-      <div class="admin-grid">
-        <section class="card admin-card" aria-labelledby="token-title">
-          <small>CREDENCIAIS</small>
-          <h2 id="token-title">Gerar token de API</h2>
-          <p class="muted">A criação exige confirmação explícita. O valor completo não será salvo nesta tela.</p>
-          <form id="token-form" novalidate>
-            <label for="token-name">Nome identificável
-              <input id="token-name" maxlength="120" placeholder="Integração homologação" required>
-            </label>
-            <label for="token-scopes">Escopos
-              <input id="token-scopes" value="read" maxlength="500" aria-describedby="scope-help" required>
-            </label>
-            <p class="field-help" id="scope-help">Separe por vírgula ou espaço. Use o menor conjunto necessário.</p>
-            <label for="token-expires">Expiração opcional
-              <input id="token-expires" type="datetime-local">
-            </label>
-            <label class="confirmation">
-              <input id="token-confirm" type="checkbox" required>
-              <span>Revisei nome, escopos e prazo e autorizo esta emissão.</span>
-            </label>
-            <button class="primary" id="token-submit" type="submit">Gerar token</button>
-          </form>
-          <div class="secret-result" id="token-result" hidden>
-            <strong>Token criado.</strong>
-            <p id="token-result-meta"></p>
-            <button class="secondary" id="copy-token" type="button">Copiar uma vez</button>
-            <p class="field-help" id="token-expiry-note"></p>
-          </div>
-          <div class="form-message" id="token-output" role="status" aria-live="polite"></div>
-        </section>
-
-        <section class="card admin-card" aria-labelledby="product-title">
-          <small>CATÁLOGO</small>
-          <h2 id="product-title">Cadastrar produto</h2>
-          <p class="muted">O cadastro entra como prévia por padrão e não publica uma API externa.</p>
-          <form id="product-form" novalidate>
-            <label for="product-slug">Slug
-              <input id="product-slug" pattern="[a-z0-9-]+" maxlength="80" placeholder="produto-exemplo" required>
-            </label>
-            <label for="product-name">Nome
-              <input id="product-name" maxlength="120" required>
-            </label>
-            <label for="product-description">Descrição
-              <textarea id="product-description" minlength="8" maxlength="2000" required></textarea>
-            </label>
-            <div class="form-row">
-              <label for="product-status">Estado
-                <select id="product-status">
-                  <option value="preview">Prévia</option>
-                  <option value="private">Privado</option>
-                  <option value="maintenance">Manutenção</option>
-                  <option value="online">Online</option>
-                </select>
-              </label>
-              <label class="confirmation compact">
-                <input id="product-public" type="checkbox" checked>
-                <span>Visível no catálogo público</span>
-              </label>
-            </div>
-            <label class="confirmation compact">
-              <input id="product-sandbox" type="checkbox" checked>
-              <span>Permitir demonstração no sandbox</span>
-            </label>
-            <button class="primary" id="product-submit" type="submit">Cadastrar produto</button>
-          </form>
-          <div class="form-message" id="product-output" role="status" aria-live="polite"></div>
-        </section>
-      </div>
-
-      <section class="data-section" aria-labelledby="tokens-list-title">
-        <div class="subhead">
-          <div><small>INVENTÁRIO</small><h2 id="tokens-list-title">Tokens</h2></div>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Nome</th><th>Prefixo</th><th>Escopos</th><th>Expiração</th><th>Estado</th><th>Ação</th></tr></thead>
-            <tbody id="tokens-table"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="data-section" aria-labelledby="products-list-title">
-        <div class="subhead">
-          <div><small>CATÁLOGO</small><h2 id="products-list-title">Produtos cadastrados</h2></div>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Produto</th><th>Slug</th><th>Estado</th><th>Público</th><th>Sandbox</th></tr></thead>
-            <tbody id="products-table"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="data-section" aria-labelledby="audit-title">
-        <div class="subhead">
-          <div><small>RASTREABILIDADE</small><h2 id="audit-title">Eventos recentes</h2></div>
-        </div>
-        <ol class="audit-list" id="audit-list"></ol>
-      </section>
-    </div>
   </main>
-  <script src="assets/admin.js" defer></script>
 </body>
 </html>
