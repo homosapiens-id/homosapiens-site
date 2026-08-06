@@ -9,8 +9,12 @@ from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
-PAGES = [SITE / "index.html", SITE / "admin.html"]
-ASSETS = [SITE / "assets" / "portal.css", SITE / "assets" / "portal.js"]
+ALLOWED_FILES = {
+    "index.html",
+    "assets/portal.css",
+    "assets/portal.js",
+}
+REQUIRED_FILES = {SITE / relative for relative in ALLOWED_FILES}
 
 SECRET_PATTERNS = {
     "github_token": re.compile(r"\b(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{20,}\b"),
@@ -20,14 +24,18 @@ SECRET_PATTERNS = {
     "jwt_like": re.compile(r"\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b"),
 }
 
-FORBIDDEN_RUNTIME_REFERENCES = (
+FORBIDDEN_REFERENCES = (
     "api.homosapiens.id",
     "HS_API_BASE",
-    "/v1/catalog",
-    "/v1/sandbox",
-    "/admin/login",
+    "/v1/",
+    "/admin/",
     "/tokens/",
     "fetch(",
+    "XMLHttpRequest",
+    "WebSocket",
+    "EventSource",
+    "fonts.googleapis.com",
+    "fonts.gstatic.com",
 )
 
 class PageParser(HTMLParser):
@@ -39,6 +47,8 @@ class PageParser(HTMLParser):
         self.buttons_without_type: list[str] = []
         self.html_lang = ""
         self.viewport = False
+        self.referrer = False
+        self.csp = False
         self._button_index = 0
 
     def handle_starttag(self, tag, attrs):
@@ -47,6 +57,10 @@ class PageParser(HTMLParser):
             self.html_lang = values.get("lang", "")
         if tag == "meta" and values.get("name", "").lower() == "viewport":
             self.viewport = bool(values.get("content"))
+        if tag == "meta" and values.get("name", "").lower() == "referrer":
+            self.referrer = values.get("content") == "no-referrer"
+        if tag == "meta" and values.get("http-equiv", "").lower() == "content-security-policy":
+            self.csp = "default-src 'self'" in values.get("content", "")
         if values.get("id"):
             self.ids.append(values["id"])
         if tag == "label" and values.get("for"):
@@ -67,23 +81,26 @@ def local_reference(page: Path, reference: str):
     return (page.parent / parsed.path).resolve()
 
 def validate_text(path: Path, text: str) -> list[str]:
-    failures = []
+    failures: list[str] = []
     for name, pattern in SECRET_PATTERNS.items():
         if pattern.search(text):
             failures.append(f"{path}: possible {name} committed")
     if "http://" in text:
         failures.append(f"{path}: insecure HTTP endpoint detected")
+    for forbidden in FORBIDDEN_REFERENCES:
+        if forbidden in text:
+            failures.append(f"{path}: forbidden external/runtime reference: {forbidden}")
     return failures
 
 def validate_page(page: Path) -> list[str]:
-    failures = []
+    failures: list[str] = []
     text = page.read_text(encoding="utf-8")
     parser = PageParser()
     parser.feed(text)
 
     duplicates = sorted({item for item in parser.ids if parser.ids.count(item) > 1})
     if duplicates:
-        failures.append(f"{page}: duplicate ids: {', '.join(duplicates)}")
+        failures.append(f"{page}: duplicate ids: {', '.join(duplicates)=")
     missing_targets = sorted(set(parser.labels) - set(parser.ids))
     if missing_targets:
         failures.append(f"{page}: labels without target: {', '.join(missing_targets)}")
@@ -93,6 +110,10 @@ def validate_page(page: Path) -> list[str]:
         failures.append(f"{page}: html lang must be pt-BR")
     if not parser.viewport:
         failures.append(f"{page}: viewport meta is required")
+    if not parser.referrer:
+        failures.append(f"{page}: no-referrer policy is required")
+    if not parser.csp:
+        failures.append(f"{page}: restrictive Content-Security-Policy is required")
     if "<main" not in text or 'id="conteudo"' not in text:
         failures.append(f"{page}: accessible main landmark is missing")
     if "skip-link" not in text:
@@ -109,32 +130,36 @@ def validate_page(page: Path) -> list[str]:
 def main() -> int:
     failures: list[str] = []
 
-    for path in [*PAGES, *ASSETS]:
+    actual_files = {
+        str(path.relative_to(SITE)).replace("\\", "/")
+        for path in SITE.rglob("*")
+        if path.is_file()
+    }
+    unexpected = sorted(actual_files - ALLOWED_FILES)
+    missing = sorted(ALLOWED_FILES - actual_files)
+    if unexpected:
+        failures.append(f"unexpected files in published site: {', '.join(unexpected)}")
+    if missing:
+        failures.append(f"missing required published files: {', '.join(missing)}")
+
+    for path in REQUIRED_FILES:
         if not path.is_file():
             failures.append(f"missing required file: {path}")
 
     if not failures:
-        for page in PAGES:
-            failures.extend(validate_page(page))
+        failures.extend(validate_page(SITE / "index.html"))
+
+        for path in (SITE / "assets" / "portal.js", SITE / "assets" / "portal.css"):
+            text = path.read_text(encoding="utf-8")
+            failures.extend(validate_text(path, text))
 
         portal_js = (SITE / "assets" / "portal.js").read_text(encoding="utf-8")
-        failures.extend(validate_text(SITE / "assets" / "portal.js", portal_js))
-        for forbidden in FORBIDDEN_RUNTIME_REFERENCES:
-            if forbidden in portal_js:
-                failures.append(f"portal.js must not contain runtime dependency: {forbidden}")
-
-        index_text = (SITE / "index.html").read_text(encoding="utf-8")
-        if "admin.html" in index_text:
-            failures.append("public navigation must not expose admin.html")
         if "online" in portal_js.lower():
             failures.append("portal.js must not claim products are online")
         if "external_request_sent: false" not in portal_js:
             failures.append("local sandbox must explicitly record that no external request was sent")
-
-        admin_text = (SITE / "admin.html").read_text(encoding="utf-8")
-        for forbidden in ('type="password"', "login-form", "token-form", "assets/admin.js"):
-            if forbidden in admin_text:
-                failures.append(f"admin.html must remain disabled and must not contain: {forbidden}")
+        if "executed: false" not in portal_js:
+            failures.append("local sandbox must explicitly record that no execution occurred")
 
         css = (SITE / "assets" / "portal.css").read_text(encoding="utf-8")
         if css.count("{") != css.count("}"):
@@ -148,7 +173,7 @@ def main() -> int:
         return 1
 
     print("static-site validation: PASS")
-    print(f"pages={len(PAGES)} assets={len(ASSETS)} mode=static-only")
+    print(f"allowlist={len(ALLOWED_FILES)} mode=static-only")
     return 0
 
 if __name__ == "__main__":
