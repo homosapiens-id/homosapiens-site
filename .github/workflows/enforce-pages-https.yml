@@ -1,0 +1,32 @@
+name: Enforce Pages HTTPS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/enforce-pages-https.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+
+jobs:
+  enforce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Inspect and enforce HTTPS
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          api="https://api.github.com/repos/${REPOSITORY}/pages"
+          before="$(curl --fail-with-body --silent --show-error             -H "Accept: application/vnd.github+json"             -H "Authorization: Bearer ${GH_TOKEN}"             -H "X-GitHub-Api-Version: 2026-03-10"             "${api}")"
+          state="$(python -c 'import json,sys; print((json.load(sys.stdin).get("https_certificate") or {}).get("state",""))' <<<"${before}")"
+          test "${state}" = "approved"
+          curl --fail-with-body --silent --show-error             -X PUT             -H "Accept: application/vnd.github+json"             -H "Authorization: Bearer ${GH_TOKEN}"             -H "X-GitHub-Api-Version: 2026-03-10"             "${api}"             -d '{"https_enforced":true}'
+          after="$(curl --fail-with-body --silent --show-error             -H "Accept: application/vnd.github+json"             -H "Authorization: Bearer ${GH_TOKEN}"             -H "X-GitHub-Api-Version: 2026-03-10"             "${api}")"
+          python -c 'import json,sys; d=json.load(sys.stdin); assert d.get("https_enforced") is True; print("HTTPS enforced; certificate:", (d.get("https_certificate") or {}).get("state"))' <<<"${after}"
