@@ -24,9 +24,24 @@ jobs:
         run: |
           set -euo pipefail
           api="https://api.github.com/repos/${REPOSITORY}/pages"
-          before="$(curl --fail-with-body --silent --show-error             -H "Accept: application/vnd.github+json"             -H "Authorization: Bearer ${GH_TOKEN}"             -H "X-GitHub-Api-Version: 2026-03-10"             "${api}")"
-          state="$(python -c 'import json,sys; print((json.load(sys.stdin).get("https_certificate") or {}).get("state",""))' <<<"${before}")"
-          test "${state}" = "approved"
-          curl --fail-with-body --silent --show-error             -X PUT             -H "Accept: application/vnd.github+json"             -H "Authorization: Bearer ${GH_TOKEN}"             -H "X-GitHub-Api-Version: 2026-03-10"             "${api}"             -d '{"https_enforced":true}'
-          after="$(curl --fail-with-body --silent --show-error             -H "Accept: application/vnd.github+json"             -H "Authorization: Bearer ${GH_TOKEN}"             -H "X-GitHub-Api-Version: 2026-03-10"             "${api}")"
-          python -c 'import json,sys; d=json.load(sys.stdin); assert d.get("https_enforced") is True; print("HTTPS enforced; certificate:", (d.get("https_certificate") or {}).get("state"))' <<<"${after}"
+          get_body="$(mktemp)"
+          get_code="$(curl --silent --show-error --output "${get_body}" --write-out "%{http_code}"             -H "Accept: application/vnd.github+json"             -H "Authorization: Bearer ${GH_TOKEN}"             -H "X-GitHub-Api-Version: 2026-03-10"             "${api}")"
+          certificate="$(python -c 'import json,sys; d=json.load(open(sys.argv[1])); print((d.get("https_certificate") or {}).get("state","unknown"))' "${get_body}")"
+          enforced="$(python -c 'import json,sys; d=json.load(open(sys.argv[1])); print(str(d.get("https_enforced",False)).lower())' "${get_body}")"
+          echo "::notice title=Pages HTTPS state::GET=${get_code} certificate=${certificate} enforced=${enforced}"
+          test "${get_code}" = "200"
+          if [ "${enforced}" = "true" ]; then
+            exit 0
+          fi
+          if [ "${certificate}" != "approved" ]; then
+            echo "::error title=Pages certificate pending::certificate=${certificate}"
+            exit 1
+          fi
+          put_body="$(mktemp)"
+          put_code="$(curl --silent --show-error --output "${put_body}" --write-out "%{http_code}"             -X PUT             -H "Accept: application/vnd.github+json"             -H "Authorization: Bearer ${GH_TOKEN}"             -H "X-GitHub-Api-Version: 2026-03-10"             "${api}"             -d '{"https_enforced":true}')"
+          message="$(python -c 'import json,sys; import pathlib; p=pathlib.Path(sys.argv[1]); t=p.read_text(); print((json.loads(t).get("message","") if t else "").replace("%","percent").replace("\n"," "))' "${put_body}")"
+          if [ "${put_code}" != "204" ]; then
+            echo "::error title=Pages HTTPS update rejected::PUT=${put_code} message=${message}"
+            exit 1
+          fi
+          echo "::notice title=Pages HTTPS enabled::PUT=${put_code}"
