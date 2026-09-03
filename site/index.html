@@ -1,102 +1,105 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Portal público de demonstrações estáticas da plataforma HomoSapiens.">
-  <meta name="referrer" content="no-referrer">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests">
-  <title>HomoSapiens</title>
-  <link rel="stylesheet" href="assets/portal.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="HomoSapiens ID — ecossistema público de plataformas especializadas em inteligência aplicada.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; upgrade-insecure-requests">
+<title>HomoSapiens ID</title>
+<link rel="stylesheet" href="assets/portal.css">
 </head>
 <body>
-  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
-  <header class="nav">
-    <a class="brand" href="/" aria-label="HomoSapiens, início">HomoSapiens<span>Portal</span></a>
+<a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+
+<header class="topbar">
+  <div class="wrap nav">
+    <a class="brand" href="/" aria-label="HomoSapiens ID, início">
+      <span class="mark">◉</span>
+      <div><b>HomoSapiens ID</b><small>Inteligência aplicada</small></div>
+    </a>
     <nav aria-label="Navegação principal">
-      <a href="#demonstracoes">Demonstrações</a>
-      <a href="#sandbox">Sandbox local</a>
-      <a href="#integracao">Integração</a>
+      <a href="#ecossistema">Ecossistema</a>
+      <a href="#principios">Princípios</a>
+      <a href="#sobre">Sobre</a>
     </nav>
-  </header>
+  </div>
+</header>
 
-  <main id="conteudo">
-    <section class="hero">
-      <p class="eyebrow">INTELIGÊNCIA APLICADA · PORTAL PÚBLICO</p>
-      <h1>Demonstrações transparentes, sem depender da antiga VPS.</h1>
-      <p>Este portal é estático e público. Ele apresenta capacidades, contratos e exemplos locais sem afirmar disponibilidade produtiva de APIs, runners ou serviços autenticados.</p>
-      <div class="actions">
-        <a class="primary" href="#demonstracoes">Explorar demonstrações</a>
-        <a class="secondary" href="#sandbox">Usar sandbox local</a>
-      </div>
-      <p class="status status-preview" id="platform-status" role="status" aria-live="polite">
-        <span aria-hidden="true"></span> Portal estático publicado pelo GitHub Pages.
-      </p>
-    </section>
+<main id="conteudo">
+<section class="hero wrap">
+  <div class="hero-copy">
+    <span class="eyebrow">HOMOSAPIENS ID · INSTITUIÇÃO DE INTELIGÊNCIA APLICADA</span>
+    <h1>Diferentes faculdades. <em>Uma mesma identidade.</em></h1>
+    <p>HomoSapiens ID reúne plataformas especializadas em pesquisa, formação, linguagem, percepção, visualidade e ciências da vida. Cada produto tem seu próprio workspace, mas compartilha login, governança, revisão humana e arquitetura segura.</p>
+    <div class="actions">
+      <a class="primary" href="#ecossistema">Explorar o ecossistema</a>
+      <a class="secondary" href="#sobre">Conhecer a HomoSapiens ID</a>
+    </div>
+    <div class="trust">
+      <span>Produtos especializados</span><span>Revisão humana</span><span>Arquitetura segura</span>
+    </div>
+  </div>
 
-    <section class="section" id="demonstracoes" aria-labelledby="apis-title">
-      <div class="section-head">
-        <div>
-          <small>CATÁLOGO LOCAL</small>
-          <h2 id="apis-title">Demonstrações disponíveis</h2>
-        </div>
-        <p>Os itens abaixo descrevem capacidades e protótipos. Nenhum estado apresentado aqui comprova que exista API produtiva ou serviço autenticado ativo.</p>
-      </div>
-      <div id="api-grid" class="grid" aria-live="polite"></div>
-    </section>
+  <div class="hero-panel" aria-hidden="true">
+    <div class="panel-top"><b>Ecossistema HomoSapiens</b><span>● plataformas ativas</span></div>
+    <div class="orbit">
+      <div class="core"><span>HS</span><b>ID</b></div>
+      <span class="node n1">I</span>
+      <span class="node n2">S</span>
+      <span class="node n3">L</span>
+      <span class="node n4">V</span>
+      <span class="node n5">Vi</span>
+    </div>
+    <div class="panel-foot"><span>Intuitus</span><span>Sensus</span><span>Littera</span><span>Vita</span><span>Visio</span></div>
+  </div>
+</section>
 
-    <section class="section sandbox" id="sandbox" aria-labelledby="sandbox-title">
-      <div class="sandbox-copy">
-        <small>SANDBOX LOCAL</small>
-        <h2 id="sandbox-title">Teste o formato, sem acessar backend.</h2>
-        <p>O resultado é gerado no navegador, não consulta serviços externos, não envia dados e não comprova disponibilidade produtiva.</p>
-        <p class="notice"><strong>Ambiente demonstrativo:</strong> não informe dados pessoais, documentos, segredos ou credenciais.</p>
-      </div>
-      <form class="console" id="sandbox-form">
-        <label for="sandbox-product">Demonstração
-          <select id="sandbox-product" required>
-            <option value="lex-juridica">Lex Jurídica</option>
-            <option value="lex-search-core">Lex Search Core</option>
-            <option value="datajud-connector">DataJud Connector</option>
-          </select>
-        </label>
-        <label for="sandbox-operation">Operação simulada
-          <select id="sandbox-operation" required>
-            <option value="search">Pesquisa</option>
-            <option value="health">Saúde</option>
-            <option value="metadata">Metadados</option>
-          </select>
-        </label>
-        <label for="sandbox-query">Consulta demonstrativa
-          <textarea id="sandbox-query" maxlength="2000" placeholder="Descreva uma consulta sem dados pessoais ou sigilosos"></textarea>
-        </label>
-        <button class="primary" id="sandbox-submit" type="submit">Gerar demonstração local</button>
-        <div class="result-panel" id="sandbox-result" aria-live="polite">
-          <p class="muted">O resultado local aparecerá aqui.</p>
-        </div>
-      </form>
-    </section>
+<section class="strip">
+  <div class="wrap stats">
+    <div><b>5</b><span>plataformas públicas</span></div>
+    <div><b>1</b><span>identidade institucional</span></div>
+    <div><b>100%</b><span>autoridade humana final</span></div>
+    <div><b>0</b><span>produtos jurídicos no portal</span></div>
+  </div>
+</section>
 
-    <section class="section" id="integracao" aria-labelledby="integracao-title">
-      <div class="section-head">
-        <div>
-          <small>INTEGRAÇÃO</small>
-          <h2 id="integracao-title">Publicação separada de serviços.</h2>
-        </div>
-        <p>APIs, autenticação, runners e administração não estão hospedados neste portal. Cada serviço será publicado separadamente somente após infraestrutura, segurança, evidência e homologação próprias.</p>
-      </div>
-      <div class="steps">
-        <article><b>01</b><h3>Explore</h3><p>Consulte descrições públicas e formatos demonstrativos.</p></article>
-        <article><b>02</b><h3>Teste localmente</h3><p>Use o sandbox sintético sem transmitir dados.</p></article>
-        <article><b>03</b><h3>Integre depois</h3><p>Considere um serviço ativo apenas quando houver endpoint publicado e evidência técnica.</p></article>
-      </div>
-    </section>
-  </main>
+<section class="section wrap" id="ecossistema">
+  <div class="section-head">
+    <div><small>ECOSSISTEMA</small><h2>Cinco plataformas, cinco especialidades.</h2></div>
+    <p>Cada produto resolve um tipo de problema, mas todos pertencem à mesma arquitetura institucional.</p>
+  </div>
+  <div id="product-grid" class="product-grid" aria-live="polite"></div>
+</section>
 
-  <footer>
-    <strong>HomoSapiens</strong>
-    <span>Portal público estático · sem VPS · sem backend produtivo.</span>
-  </footer>
-  <script src="assets/portal.js" defer></script>
+<section class="section alt" id="principios">
+  <div class="wrap principles">
+    <div><small>PRINCÍPIOS</small><h2>Produtos diferentes. Regras comuns.</h2></div>
+    <div class="principle-grid">
+      <article><b>01</b><h3>Especialização</h3><p>Cada plataforma tem domínio, limites e contrato próprios.</p></article>
+      <article><b>02</b><h3>Revisão humana</h3><p>A decisão final permanece com a pessoa ou equipe responsável.</p></article>
+      <article><b>03</b><h3>Evidência e limites</h3><p>Onde há incerteza, a plataforma deve mostrá-la.</p></article>
+      <article><b>04</b><h3>Segurança de arquitetura</h3><p>Credenciais e chaves ficam fora do frontend e os serviços são isolados.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="section wrap" id="sobre">
+  <small>HOMOSAPIENS ID</small>
+  <h2>A casa-mãe do ecossistema.</h2>
+  <div class="about-grid">
+    <p>HomoSapiens ID une inteligência aplicada, design, engenharia e governança em uma mesma arquitetura. O domínio raiz é a porta pública para as plataformas especializadas.</p>
+    <p>Produtos jurídicos, Lex, Mitra e componentes de advocacia não fazem parte deste catálogo público.</p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap footer-inner">
+    <div><b>HomoSapiens ID</b><span>Inteligência aplicada com especialização e governança.</span></div>
+    <span>homosapiens.id</span>
+  </div>
+</footer>
+
+<script src="assets/portal.js" defer></script>
 </body>
 </html>
