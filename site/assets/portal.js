@@ -9,7 +9,8 @@
     ['Sensus','PERCEPÇÃO · SINAIS','Integra sinais, padrões, riscos e oportunidades.','https://sensus.homosapiens.id'],
     ['Littera','LINGUAGEM · ESCRITA','Revisão, reescrita, adaptação e tradução.','https://littera.homosapiens.id'],
     ['Vita','SAÚDE · CIÊNCIAS DA VIDA','Formação e pesquisa educacional em saúde.','https://vita.homosapiens.id'],
-    ['Visio','IMAGEM · AVATAR · VOZ · VÍDEO','Estúdio multimodal para imagem, avatar, voz e animação.','https://visio.homosapiens.id']
+    ['Visio','IMAGEM · AVATAR · VOZ · VIDEO','Estúdio multimodal para imagem, avatar, voz e animação.','https://visio.homosapiens.id'],
+    ['ChefSapiens','GASTRONOMIA · TÉCNICA · CRIAÇÃO','Inteliência culinária para técnicas, ingredientes, receitas, substituições e segurança alimentar.','https://chefsapiens.homosapiens.id']
   ];
 
   const grid = document.getElementById('product-grid');
