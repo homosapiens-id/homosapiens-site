@@ -8,7 +8,7 @@ permissions:
   contents: read
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, autorun]
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4

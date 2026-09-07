@@ -16,7 +16,9 @@ concurrency:
   cancel-in-progress: true
 jobs:
   validate-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on:
+      group: hs-production
+      labels: [self-hosted, autorun]
     timeout-minutes: 10
     environment:
       name: github-pages
