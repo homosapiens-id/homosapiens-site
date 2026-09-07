@@ -11,15 +11,13 @@ jobs:
     runs-on: [self-hosted, autorun]
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: ${{ github.sha }}
           persist-credentials: false
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-      - run: python tests/validate_static.py
+      - name: Verify self-hosted toolchain
+        run: |
+          python3 --version
+          node --version
+      - run: python3 tests/validate_static.py
       - run: node --check site/assets/portal.js
