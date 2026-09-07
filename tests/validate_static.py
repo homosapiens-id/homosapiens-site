@@ -11,10 +11,12 @@ ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
 ALLOWED_FILES = {
     "index.html",
+    "privacy.html",
     "assets/portal.css",
     "assets/portal.js",
 }
 REQUIRED_FILES = {SITE / relative for relative in ALLOWED_FILES}
+PAGES = (SITE / "index.html", SITE / "privacy.html")
 
 SECRET_PATTERNS = {
     "github_token": re.compile(r"\b(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{20,}\b"),
@@ -147,11 +149,11 @@ def main() -> int:
             failures.append(f"missing required file: {path}")
 
     if not failures:
-        failures.extend(validate_page(SITE / "index.html"))
+        for page in PAGES:
+            failures.extend(validate_page(page))
 
         for path in (SITE / "assets" / "portal.js", SITE / "assets" / "portal.css"):
-            text = path.read_text(encoding="utf-8")
-            failures.extend(validate_text(path, text))
+            failures.extend(validate_text(path, path.read_text(encoding="utf-8")))
 
         portal_js = (SITE / "assets" / "portal.js").read_text(encoding="utf-8")
         if "online" in portal_js.lower():

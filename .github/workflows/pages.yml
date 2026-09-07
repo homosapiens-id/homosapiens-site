@@ -40,6 +40,7 @@ jobs:
         run: |
           mkdir -p _site/assets
           cp site/index.html _site/index.html
+          cp site/privacy.html _site/privacy.html
           cp site/assets/portal.css _site/assets/portal.css
           cp site/assets/portal.js _site/assets/portal.js
       - uses: actions/configure-pages@v5
