@@ -43,6 +43,15 @@ jobs:
           cp site/privacy.html _site/privacy.html
           cp site/assets/portal.css _site/assets/portal.css
           cp site/assets/portal.js _site/assets/portal.js
+      - name: Ensure GNU tar for Pages artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! command -v gtar >/dev/null 2>&1; then
+            brew list gnu-tar >/dev/null 2>&1 || brew install gnu-tar
+          fi
+          command -v gtar
+          gtar --version | head -1
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
