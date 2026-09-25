@@ -9,14 +9,26 @@ from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
-ALLOWED_FILES = {
+
+PUBLISHED_FILES = {
     "index.html",
     "privacy.html",
     "assets/portal.css",
     "assets/portal.js",
 }
+REVIEW_ONLY_FILES = {
+    "terms.html",
+    "support.html",
+    "assets/brand-review.svg",
+}
+ALLOWED_FILES = PUBLISHED_FILES | REVIEW_ONLY_FILES
 REQUIRED_FILES = {SITE / relative for relative in ALLOWED_FILES}
-PAGES = (SITE / "index.html", SITE / "privacy.html")
+PAGES = (
+    SITE / "index.html",
+    SITE / "privacy.html",
+    SITE / "terms.html",
+    SITE / "support.html",
+)
 
 SECRET_PATTERNS = {
     "github_token": re.compile(r"\b(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{20,}\b"),
@@ -47,6 +59,7 @@ class PageParser(HTMLParser):
         self.labels: list[str] = []
         self.references: list[str] = []
         self.buttons_without_type: list[str] = []
+        self.forms = 0
         self.html_lang = ""
         self.viewport = False
         self.referrer = False
@@ -71,10 +84,14 @@ class PageParser(HTMLParser):
             self.references.append(values["src"])
         if tag == "link" and values.get("href"):
             self.references.append(values["href"])
+        if tag == "a" and values.get("href"):
+            self.references.append(values["href"])
         if tag == "button":
             self._button_index += 1
             if not values.get("type"):
                 self.buttons_without_type.append(values.get("id") or f"button#{self._button_index}")
+        if tag == "form":
+            self.forms += 1
 
 def local_reference(page: Path, reference: str):
     parsed = urlparse(reference)
@@ -126,6 +143,14 @@ def validate_page(page: Path) -> list[str]:
         if target is not None and not target.is_file():
             failures.append(f"{page}: missing referenced asset: {reference}")
 
+    if page.name in {"terms.html", "support.html"}:
+        if "DRAFT" not in text or "NOT PUBLIC" not in text:
+            failures.append(f"{page}: review-only page must state DRAFT and NOT PUBLIC")
+        if parser.forms:
+            failures.append(f"{page}: review-only page must not define a live form")
+        if "mailto:" in text.lower():
+            failures.append(f"{page}: review-only page must not invent a public email")
+
     failures.extend(validate_text(page, text))
     return failures
 
@@ -140,9 +165,9 @@ def main() -> int:
     unexpected = sorted(actual_files - ALLOWED_FILES)
     missing = sorted(ALLOWED_FILES - actual_files)
     if unexpected:
-        failures.append(f"unexpected files in published site: {', '.join(unexpected)}")
+        failures.append(f"unexpected files in site tree: {', '.join(unexpected)}")
     if missing:
-        failures.append(f"missing required published files: {', '.join(missing)}")
+        failures.append(f"missing required review/published files: {', '.join(missing)}")
 
     for path in REQUIRED_FILES:
         if not path.is_file():
@@ -152,7 +177,7 @@ def main() -> int:
         for page in PAGES:
             failures.extend(validate_page(page))
 
-        for path in (SITE / "assets" / "portal.js", SITE / "assets" / "portal.css"):
+        for path in (SITE / "assets" / "portal.js", SITE / "assets" / "portal.css", SITE / "assets" / "brand-review.svg"):
             failures.extend(validate_text(path, path.read_text(encoding="utf-8")))
 
         portal_js = (SITE / "assets" / "portal.js").read_text(encoding="utf-8")
@@ -170,12 +195,16 @@ def main() -> int:
             if required not in css:
                 failures.append(f"portal.css missing accessibility/responsive rule: {required}")
 
+        brand = (SITE / "assets" / "brand-review.svg").read_text(encoding="utf-8").lower()
+        if "não aprovado para publicação" not in brand:
+            failures.append("brand-review.svg must remain explicitly unapproved for publication")
+
     if failures:
         print("\n".join(failures), file=sys.stderr)
         return 1
 
-    print("static-site validation: PASS")
-    print(f"allowlist={len(ALLOWED_FILES)} mode=static-only")
+    print("static-site review validation: PASS")
+    print(f"published_allowlist={len(PUBLISHED_FILES)} review_only={len(REVIEW_ONLY_FILES)}")
     return 0
 
 if __name__ == "__main__":
